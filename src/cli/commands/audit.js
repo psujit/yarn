@@ -134,6 +134,10 @@ export function setFlags(commander: Object) {
     info|low|moderate|high|critical. Default: info`,
     'info',
   );
+  commander.option(
+    '--fix',
+    'Creates package.json.fixed with the required updates'
+  );
 }
 
 export function hasWrapper(commander: Object, args: Array<string>): boolean {
@@ -172,6 +176,10 @@ export async function run(config: Config, reporter: Reporter, flags: Object, arg
     audit.summary();
   } else {
     audit.report();
+  }
+  
+  if (flags.fix) {
+    await audit.fix();
   }
 
   return exitCode;
@@ -349,5 +357,14 @@ export default class Audit {
     }
 
     this.summary();
+  }
+  
+  fix() {
+    if (!this.auditData) {
+      return;
+    }
+    
+    console.log(this.auditData);
+    //TODO: Read package.json, update packages and write to package.json.fixed.
   }
 }
